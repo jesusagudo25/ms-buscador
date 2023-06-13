@@ -24,14 +24,44 @@ public class ProductosServiceImpl implements ProductosService {
 	}
 	
 	@Override
-	public List<Producto> searchProductos(String nombre){
-		List<Producto> productos = repository.findByNombreContaining(nombre);
+	public List<Producto> findByNombreAndCodigo(String nombre, String codigo){
+		List<Producto> productos = repository.findByNombreAndCodigo(nombre, codigo);
 		
 		if (productos != null) {
 			return productos;
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public List<Producto> findByNombre(String nombre){
+		List<Producto> productos = repository.findByNombre(nombre);
+		
+		if (productos != null) {
+			return productos;
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Producto> findByCodigo(String codigo) {
+		List<Producto> producto = repository.findByCodigo(codigo);
+		
+		if(producto != null) {
+			return producto;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Producto> findByNombreContaining(String nombre) {
+
+		List<Producto> productos = repository.findByNombreContaining(nombre);
+		return productos.isEmpty() ? null : productos;
 	}
 
 	@Override
@@ -102,17 +132,6 @@ public class ProductosServiceImpl implements ProductosService {
 			return null;
 		}
 	}
-	
-	@Override
-	public Producto getProductoByCodigo(String codigo) {
-		Producto producto = repository.findByCodigo(codigo);
-		
-		if(producto != null) {
-			return producto;
-		}
-		else {
-			return null;
-		}
-	}
+
 
 }

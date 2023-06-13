@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unir.msbuscador.model.pojo.Producto;
@@ -31,16 +32,28 @@ public class ProductosController {
 	private final ProductosService service;
 
 	@GetMapping("/productos")
-	public ResponseEntity<List<Producto>> getProductos(@RequestHeader Map<String, String> headers) {
-
-		log.info("headers: {}", headers);
-		List<Producto> productos = service.getProductos();
-
+	public ResponseEntity<List<Producto>> getProductos(
+			@RequestParam(value = "nombre", required = false) String nombre,
+		    @RequestParam(value = "codigo", required = false) String codigo
+    ) {
+		List<Producto> productos;
+		
+		if (nombre != null && codigo != null) {
+			productos = service.findByNombreAndCodigo(nombre, codigo);
+	    } else if (nombre != null) {
+	    	productos = service.findByNombreContaining(nombre);
+	    } else if (codigo != null) {
+	    	productos = service.findByCodigo(codigo);
+	    } else {	    	
+	    	productos = service.getProductos();
+	    }
+		
 		if (productos != null) {
 			return ResponseEntity.ok(productos);
 		} else {
 			return ResponseEntity.ok(Collections.emptyList());
 		}
+
 	}
 	
 	@GetMapping("/productos/{productoId}")
@@ -55,30 +68,6 @@ public class ProductosController {
 			return ResponseEntity.notFound().build();
 		}
 
-	}
-	
-	@GetMapping("/productos/{codigo}/codigo")
-	public ResponseEntity<Producto> getProductoByCodigo(@PathVariable String codigo) {
-
-		Producto producto = service.getProductoByCodigo(codigo);
-
-		if (producto != null) {
-			return ResponseEntity.ok(producto);
-		} else {
-			return null;
-		}
-
-	}
-	
-	@GetMapping("/productos/busquedas/{nombre}")
-	public ResponseEntity<List<Producto>> searchProductos(@PathVariable String nombre) {
-		List<Producto> productos = service.searchProductos(nombre);
-
-		if (productos != null) {
-			return ResponseEntity.ok(productos);
-		} else {
-			return ResponseEntity.ok(Collections.emptyList());
-		}
 	}
 
 	@DeleteMapping("/productos/{productoId}")
@@ -118,7 +107,7 @@ public class ProductosController {
 		}
 	}
 	
-	@PatchMapping("productos/{productoId}/cantidad")
+	@PatchMapping("productos/{productoId}")
 	public ResponseEntity<Producto> updateProductoCantidad(@PathVariable long productoId, @RequestBody Map<String, Integer> requestBody){
 		Integer nuevaCantidad = requestBody.get("nuevaCantidad");
 		Producto updateProducto = service.updateProductoCantidad(productoId, nuevaCantidad);

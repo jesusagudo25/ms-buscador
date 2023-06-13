@@ -8,7 +8,9 @@ import com.unir.msbuscador.model.pojo.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Long>  {
 	List<Producto> findByNombre(String nombre);
 	
+	List<Producto> findByNombreAndCodigo(String nombre, String codigo);
+	
 	List<Producto> findByNombreContaining(String nombre);
 	
-	Producto findByCodigo(String codigo);
+	List<Producto> findByCodigo(String codigo);
 }

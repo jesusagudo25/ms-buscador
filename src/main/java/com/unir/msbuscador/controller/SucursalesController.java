@@ -2,7 +2,6 @@ package com.unir.msbuscador.controller;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unir.msbuscador.model.pojo.Sucursal;
@@ -29,10 +28,18 @@ public class SucursalesController {
 	private final SucursalesService service;
 
 	@GetMapping("/sucursales")
-	public ResponseEntity<List<Sucursal>> getSucursales(@RequestHeader Map<String, String> headers) {
-
-		log.info("headers: {}", headers);
-		List<Sucursal> sucursales = service.getSucursales();
+	public ResponseEntity<List<Sucursal>> getSucursales(
+			@RequestParam(value = "nombre", required = false) String nombre
+	    ) {
+		
+		List<Sucursal> sucursales;
+		
+		if(nombre != null) {
+			sucursales = service.searchSucursales(nombre);
+		}
+		else {
+			sucursales = service.getSucursales();
+		}
 
 		if (sucursales != null) {
 			return ResponseEntity.ok(sucursales);
@@ -53,17 +60,6 @@ public class SucursalesController {
 			return ResponseEntity.notFound().build();
 		}
 
-	}
-	
-	@GetMapping("/sucursales/busquedas/{nombre}")
-	public ResponseEntity<List<Sucursal>> searchSucursales(@PathVariable String nombre) {
-		List<Sucursal> sucursales = service.searchSucursales(nombre);
-
-		if (sucursales != null) {
-			return ResponseEntity.ok(sucursales);
-		} else {
-			return ResponseEntity.ok(Collections.emptyList());
-		}
 	}
 
 	@DeleteMapping("/sucursales/{sucursalId}")

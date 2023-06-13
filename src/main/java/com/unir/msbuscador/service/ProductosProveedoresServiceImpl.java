@@ -75,7 +75,7 @@ public class ProductosProveedoresServiceImpl implements ProductosProveedoresServ
 	public ProductoProveedor createProducto(Proveedor proveedorId, CreateProductoProveedorRequest request) {
 
 		if (request != null && StringUtils.hasLength(request.getNombre().trim())
-				&& StringUtils.hasLength(request.getCodigo().trim()) && request.getPrecio() != null && request.getIdProveedor() != null) {
+				&& StringUtils.hasLength(request.getCodigo().trim()) && request.getPrecio() != null) {
 
 			ProductoProveedor producto = ProductoProveedor.builder().nombre(request.getNombre()).codigo(request.getCodigo())
 					.precio(request.getPrecio()).cantidad(request.getCantidad()).proveedor(proveedorId).build();
@@ -90,7 +90,7 @@ public class ProductosProveedoresServiceImpl implements ProductosProveedoresServ
 	public ProductoProveedor updateProducto(ProductoProveedor producto, CreateProductoProveedorRequest request) {
 		
 		if (request != null && StringUtils.hasLength(request.getNombre().trim())
-				&& StringUtils.hasLength(request.getCodigo().trim()) && request.getPrecio() != null && request.getIdProveedor() != null) {
+				&& StringUtils.hasLength(request.getCodigo().trim()) && request.getPrecio() != null) {
 			
 			producto.setNombre(request.getNombre());
 			producto.setCodigo(request.getCodigo());

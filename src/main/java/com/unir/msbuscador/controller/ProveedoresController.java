@@ -8,15 +8,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unir.msbuscador.model.pojo.ProductoProveedor;
 import com.unir.msbuscador.model.pojo.Proveedor;
+import com.unir.msbuscador.model.request.CreateProductoProveedorRequest;
 import com.unir.msbuscador.model.request.CreateProveedorRequest;
+import com.unir.msbuscador.service.ProductosProveedoresService;
 import com.unir.msbuscador.service.ProveedoresService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +31,24 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ProveedoresController {
-	private final ProveedoresService service;
+	private final ProveedoresService proveedorService;
+	
+	private final ProductosProveedoresService productoProveedorService;
 
 	@GetMapping("/proveedores")
-	public ResponseEntity<List<Proveedor>> getProveedores(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<List<Proveedor>> getProveedores(
+			@RequestParam(value = "nombre", required = false) String nombre
+	    ) {
+		
+		List<Proveedor> proveedores;
+		
+		if(nombre != null) {
+			proveedores = proveedorService.searchProveedores(nombre);
+		}
+		else {
+			proveedores = proveedorService.getProveedores();			
+		}
 
-		log.info("headers: {}", headers);
-		List<Proveedor> proveedores = service.getProveedores();
 
 		if (proveedores != null) {
 			return ResponseEntity.ok(proveedores);
@@ -41,11 +57,34 @@ public class ProveedoresController {
 		}
 	}
 	
+	@GetMapping("/proveedores/{proveedorId}/productos")
+	public ResponseEntity<List<ProductoProveedor>> getProductosProveedores(
+			@PathVariable long proveedorId,
+			@RequestParam(value = "nombre", required = false) String nombre
+			){
+		
+		List<ProductoProveedor> productoProveedores;
+		
+		if(nombre != null) {
+			productoProveedores = productoProveedorService.searchProductosByProveedorId(proveedorId, nombre);
+		}
+		else {
+			productoProveedores = productoProveedorService.getAllProductosByProveedorId(proveedorId);
+		}
+		
+		if (productoProveedores != null) {
+			return ResponseEntity.ok(productoProveedores);
+		} else {
+			return ResponseEntity.ok(Collections.emptyList());
+		}
+		
+	}
+	
 	@GetMapping("/proveedores/{proveedorId}")
 	public ResponseEntity<Proveedor> getProveedor(@PathVariable long proveedorId) {
 
 		log.info("Request received for product {}", proveedorId);
-		Proveedor proveedor = service.getProveedor(proveedorId);
+		Proveedor proveedor = proveedorService.getProveedor(proveedorId);
 
 		if (proveedor != null) {
 			return ResponseEntity.ok(proveedor);
@@ -54,22 +93,24 @@ public class ProveedoresController {
 		}
 
 	}
-	
-	@GetMapping("/proveedores/busquedas/{nombre}")
-	public ResponseEntity<List<Proveedor>> searchProveedores(@PathVariable String nombre) {
-		List<Proveedor> proveedores = service.searchProveedores(nombre);
-
-		if (proveedores != null) {
-			return ResponseEntity.ok(proveedores);
-		} else {
-			return ResponseEntity.ok(Collections.emptyList());
-		}
-	}
 
 	@DeleteMapping("/proveedores/{proveedorId}")
 	public ResponseEntity<Void> deleteProveedor(@PathVariable long proveedorId) {
 
-		Boolean removed = service.removeProveedor(proveedorId);
+		Boolean removed = proveedorService.removeProveedor(proveedorId);
+
+		if (Boolean.TRUE.equals(removed)) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+
+	}
+	
+	@DeleteMapping("/proveedores/{proveedorId}/productos/{productoId}")
+	public ResponseEntity<Void> deleteProducto(@PathVariable long productoId) {
+
+		Boolean removed = productoProveedorService.removeProducto(productoId);
 
 		if (Boolean.TRUE.equals(removed)) {
 			return ResponseEntity.ok().build();
@@ -82,7 +123,7 @@ public class ProveedoresController {
 	@PostMapping("/proveedores")
 	public ResponseEntity<Proveedor> createProveedor(@RequestBody CreateProveedorRequest request) {
 
-		Proveedor createdProveedor = service.createProveedor(request);
+		Proveedor createdProveedor = proveedorService.createProveedor(request);
 
 		if (createdProveedor != null) {
 			return ResponseEntity.status(HttpStatus.CREATED).body(createdProveedor);
@@ -92,12 +133,61 @@ public class ProveedoresController {
 
 	}
 	
+	@PostMapping("/proveedores/{proveedorId}/productos")
+	public ResponseEntity<ProductoProveedor> createProductoProveedor(@PathVariable Proveedor proveedorId, @RequestBody CreateProductoProveedorRequest request) {
+
+		ProductoProveedor createdProducto = productoProveedorService.createProducto(proveedorId, request);
+
+		if (createdProducto != null) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(createdProducto);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+
+	}
+	
+	@GetMapping("/proveedores/{proveedorId}/productos/{productoId}")
+	public ResponseEntity<ProductoProveedor> getProductoProveedor(@PathVariable long productoId) {
+
+		ProductoProveedor producto = productoProveedorService.getProducto(productoId);
+
+		if (producto != null) {
+			return ResponseEntity.ok(producto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	
 	@PutMapping("proveedores/{proveedorId}")
 	public ResponseEntity<Proveedor> updateProveedor(@PathVariable long proveedorId, @RequestBody CreateProveedorRequest request){
-		Proveedor updateProveedor = service.updateProveedor(proveedorId, request);
+		Proveedor updateProveedor = proveedorService.updateProveedor(proveedorId, request);
 
 		if (updateProveedor != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProveedor);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+	
+	@PutMapping("/proveedores/{proveedorId}/productos/{producto}")
+	public ResponseEntity<ProductoProveedor> updateProducto(@PathVariable ProductoProveedor producto, @RequestBody CreateProductoProveedorRequest request){
+		ProductoProveedor updateProducto = productoProveedorService.updateProducto(producto, request);
+
+		if (updateProducto != null) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+	
+	@PatchMapping("/proveedores/{proveedorId}/productos/{productoId}")
+	public ResponseEntity<ProductoProveedor> updateProductoCantidad(@PathVariable long productoId, @RequestBody Map<String, Integer> requestBody){
+		Integer nuevaCantidad = requestBody.get("nuevaCantidad");
+		ProductoProveedor updateProducto = productoProveedorService.updateProductoCantidad(productoId, nuevaCantidad);
+
+		if (updateProducto != null) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);
 		} else {
 			return ResponseEntity.badRequest().build();
 		}

@@ -9,7 +9,13 @@ public interface ProductosService {
 	
 	List<Producto> getProductos();
 	
-	List<Producto> searchProductos(String nombre);
+	List<Producto> findByNombreContaining(String nombre);
+	
+	List<Producto> findByNombreAndCodigo(String nombre, String codigo);
+	
+	List<Producto> findByNombre(String nombre);
+	
+	List<Producto> findByCodigo(String codigo);
 	
 	Producto getProducto(long productoId);
 	
@@ -20,6 +26,4 @@ public interface ProductosService {
 	Producto updateProducto(long productoId, CreateProductoRequest request);
 	
 	Producto updateProductoCantidad(long productoId,Integer nuevaCantidad);
-	
-	Producto getProductoByCodigo(String codigo);
 }
