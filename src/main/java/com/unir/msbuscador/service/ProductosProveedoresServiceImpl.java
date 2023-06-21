@@ -54,14 +54,14 @@ public class ProductosProveedoresServiceImpl implements ProductosProveedoresServ
 	}
 
 	@Override
-	public ProductoProveedor getProducto(long productoId) {
-		return productoProveedorRepository.findById(Long.valueOf(productoId)).orElse(null);
+	public ProductoProveedor getProducto(String codigo) {
+		return productoProveedorRepository.findByCodigo(codigo);
 	}
 
 	@Override
-	public Boolean removeProducto(long productoId) {
+	public Boolean removeProducto(String codigo) {
 
-		ProductoProveedor producto = productoProveedorRepository.findById(Long.valueOf(productoId)).orElse(null);
+		ProductoProveedor producto = productoProveedorRepository.findByCodigo(codigo);
 
 		if (producto != null) {
 			productoProveedorRepository.delete(producto);
@@ -87,7 +87,8 @@ public class ProductosProveedoresServiceImpl implements ProductosProveedoresServ
 	}
 	
 	@Override
-	public ProductoProveedor updateProducto(ProductoProveedor producto, CreateProductoProveedorRequest request) {
+	public ProductoProveedor updateProducto(String codigo, CreateProductoProveedorRequest request) {
+		ProductoProveedor producto = productoProveedorRepository.findByCodigo(codigo);
 		
 		if (request != null && StringUtils.hasLength(request.getNombre().trim())
 				&& StringUtils.hasLength(request.getCodigo().trim()) && request.getPrecio() != null) {
@@ -104,8 +105,8 @@ public class ProductosProveedoresServiceImpl implements ProductosProveedoresServ
 	}
 	
 	@Override
-	public ProductoProveedor updateProductoCantidad(long productoId, Integer nuevaCantidad) {
-		ProductoProveedor producto = productoProveedorRepository.findById(Long.valueOf(productoId)).orElse(null);
+	public ProductoProveedor updateProductoCantidad(String codigo, Integer nuevaCantidad) {
+		ProductoProveedor producto = productoProveedorRepository.findByCodigo(codigo);
 		
 		if(producto != null) {
 			producto.setCantidad(nuevaCantidad);

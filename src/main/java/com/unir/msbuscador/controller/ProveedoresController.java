@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +36,8 @@ public class ProveedoresController {
 
 	@GetMapping("/proveedores")
 	public ResponseEntity<List<Proveedor>> getProveedores(
-			@RequestParam(value = "nombre", required = false) String nombre
+			@RequestParam(value = "nombre", required = false) String nombre,
+			@RequestParam(value = "direccion", required = false) String direccion
 	    ) {
 		
 		List<Proveedor> proveedores;
@@ -107,10 +107,10 @@ public class ProveedoresController {
 
 	}
 	
-	@DeleteMapping("/proveedores/{proveedorId}/productos/{productoId}")
-	public ResponseEntity<Void> deleteProducto(@PathVariable long productoId) {
+	@DeleteMapping("/proveedores/{proveedorId}/productos/{productoCodigo}")
+	public ResponseEntity<Void> deleteProducto(@PathVariable String productoCodigo) {
 
-		Boolean removed = productoProveedorService.removeProducto(productoId);
+		Boolean removed = productoProveedorService.removeProducto(productoCodigo);
 
 		if (Boolean.TRUE.equals(removed)) {
 			return ResponseEntity.ok().build();
@@ -146,10 +146,10 @@ public class ProveedoresController {
 
 	}
 	
-	@GetMapping("/proveedores/{proveedorId}/productos/{productoId}")
-	public ResponseEntity<ProductoProveedor> getProductoProveedor(@PathVariable long productoId) {
+	@GetMapping("/proveedores/{proveedorId}/productos/{productoCodigo}")
+	public ResponseEntity<ProductoProveedor> getProductoProveedor(@PathVariable String productoCodigo) {
 
-		ProductoProveedor producto = productoProveedorService.getProducto(productoId);
+		ProductoProveedor producto = productoProveedorService.getProducto(productoCodigo);
 
 		if (producto != null) {
 			return ResponseEntity.ok(producto);
@@ -170,9 +170,9 @@ public class ProveedoresController {
 		}
 	}
 	
-	@PutMapping("/proveedores/{proveedorId}/productos/{producto}")
-	public ResponseEntity<ProductoProveedor> updateProducto(@PathVariable ProductoProveedor producto, @RequestBody CreateProductoProveedorRequest request){
-		ProductoProveedor updateProducto = productoProveedorService.updateProducto(producto, request);
+	@PutMapping("/proveedores/{proveedorId}/productos/{productoCodigo}")
+	public ResponseEntity<ProductoProveedor> updateProducto(@PathVariable String productoCodigo, @RequestBody CreateProductoProveedorRequest request){
+		ProductoProveedor updateProducto = productoProveedorService.updateProducto(productoCodigo, request);
 
 		if (updateProducto != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);
@@ -181,10 +181,10 @@ public class ProveedoresController {
 		}
 	}
 	
-	@PatchMapping("/proveedores/{proveedorId}/productos/{productoId}")
-	public ResponseEntity<ProductoProveedor> updateProductoCantidad(@PathVariable long productoId, @RequestBody Map<String, Integer> requestBody){
+	@PatchMapping("/proveedores/{proveedorId}/productos/{productoCodigo}")
+	public ResponseEntity<ProductoProveedor> updateProductoCantidad(@PathVariable String productoCodigo, @RequestBody Map<String, Integer> requestBody){
 		Integer nuevaCantidad = requestBody.get("nuevaCantidad");
-		ProductoProveedor updateProducto = productoProveedorService.updateProductoCantidad(productoId, nuevaCantidad);
+		ProductoProveedor updateProducto = productoProveedorService.updateProductoCantidad(productoCodigo, nuevaCantidad);
 
 		if (updateProducto != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);

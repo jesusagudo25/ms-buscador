@@ -9,17 +9,17 @@ import com.unir.msbuscador.model.request.CreateProductoProveedorRequest;
 public interface ProductosProveedoresService {
 	List<ProductoProveedor> getProductos();
 	
-	ProductoProveedor getProducto(long productoId);
+	ProductoProveedor getProducto(String codigo);
 	
 	List<ProductoProveedor> getAllProductosByProveedorId(long proveedorId);
 	
 	List<ProductoProveedor> searchProductosByProveedorId(long proveedorId, String name);
 	
-	Boolean removeProducto(long productoId);
+	Boolean removeProducto(String codigo);
 	
 	ProductoProveedor createProducto(Proveedor proveedorId, CreateProductoProveedorRequest request);
 	
-	ProductoProveedor updateProducto(ProductoProveedor producto, CreateProductoProveedorRequest request);
+	ProductoProveedor updateProducto(String codigo, CreateProductoProveedorRequest request);
 	
-	ProductoProveedor updateProductoCantidad(long productoId,Integer nuevaCantidad);
+	ProductoProveedor updateProductoCantidad(String codigo,Integer nuevaCantidad);
 }

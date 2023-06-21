@@ -29,7 +29,8 @@ public class SucursalesController {
 
 	@GetMapping("/sucursales")
 	public ResponseEntity<List<Sucursal>> getSucursales(
-			@RequestParam(value = "nombre", required = false) String nombre
+			@RequestParam(value = "nombre", required = false) String nombre,
+			@RequestParam(value = "direccion", required = false) String direccion
 	    ) {
 		
 		List<Sucursal> sucursales;

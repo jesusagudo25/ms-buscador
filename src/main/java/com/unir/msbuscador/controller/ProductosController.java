@@ -42,8 +42,6 @@ public class ProductosController {
 			productos = service.findByNombreAndCodigo(nombre, codigo);
 	    } else if (nombre != null) {
 	    	productos = service.findByNombreContaining(nombre);
-	    } else if (codigo != null) {
-	    	productos = service.findByCodigo(codigo);
 	    } else {	    	
 	    	productos = service.getProductos();
 	    }
@@ -56,11 +54,11 @@ public class ProductosController {
 
 	}
 	
-	@GetMapping("/productos/{productoId}")
-	public ResponseEntity<Producto> getProducto(@PathVariable long productoId) {
+	@GetMapping("/productos/{productoCodigo}")
+	public ResponseEntity<Producto> getProducto(@PathVariable String productoCodigo) {
 
-		log.info("Request received for product {}", productoId);
-		Producto producto = service.getProducto(productoId);
+		log.info("Request received for product {}", productoCodigo);
+		Producto producto = service.getProducto(productoCodigo);
 
 		if (producto != null) {
 			return ResponseEntity.ok(producto);
@@ -70,10 +68,10 @@ public class ProductosController {
 
 	}
 
-	@DeleteMapping("/productos/{productoId}")
-	public ResponseEntity<Void> deleteProducto(@PathVariable long productoId) {
+	@DeleteMapping("/productos/{productoCodigo}")
+	public ResponseEntity<Void> deleteProducto(@PathVariable String productoCodigo) {
 
-		Boolean removed = service.removeProducto(productoId);
+		Boolean removed = service.removeProducto(productoCodigo);
 
 		if (Boolean.TRUE.equals(removed)) {
 			return ResponseEntity.ok().build();
@@ -96,9 +94,9 @@ public class ProductosController {
 
 	}
 	
-	@PutMapping("productos/{productoId}")
-	public ResponseEntity<Producto> updateProducto(@PathVariable long productoId, @RequestBody CreateProductoRequest request){
-		Producto updateProducto = service.updateProducto(productoId, request);
+	@PutMapping("productos/{productoCodigo}")
+	public ResponseEntity<Producto> updateProducto(@PathVariable String productoCodigo, @RequestBody CreateProductoRequest request){
+		Producto updateProducto = service.updateProducto(productoCodigo, request);
 
 		if (updateProducto != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);
@@ -107,10 +105,10 @@ public class ProductosController {
 		}
 	}
 	
-	@PatchMapping("productos/{productoId}")
-	public ResponseEntity<Producto> updateProductoCantidad(@PathVariable long productoId, @RequestBody Map<String, Integer> requestBody){
+	@PatchMapping("productos/{productoCodigo}")
+	public ResponseEntity<Producto> updateProductoCantidad(@PathVariable String productoCodigo, @RequestBody Map<String, Integer> requestBody){
 		Integer nuevaCantidad = requestBody.get("nuevaCantidad");
-		Producto updateProducto = service.updateProductoCantidad(productoId, nuevaCantidad);
+		Producto updateProducto = service.updateProductoCantidad(productoCodigo, nuevaCantidad);
 
 		if (updateProducto != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateProducto);

@@ -13,17 +13,13 @@ public interface ProductosService {
 	
 	List<Producto> findByNombreAndCodigo(String nombre, String codigo);
 	
-	List<Producto> findByNombre(String nombre);
+	Producto getProducto(String codigo);
 	
-	List<Producto> findByCodigo(String codigo);
-	
-	Producto getProducto(long productoId);
-	
-	Boolean removeProducto(long productoId);
+	Boolean removeProducto(String codigo);
 	
 	Producto createProducto(CreateProductoRequest request);
 	
-	Producto updateProducto(long productoId, CreateProductoRequest request);
+	Producto updateProducto(String codigo, CreateProductoRequest request);
 	
-	Producto updateProductoCantidad(long productoId,Integer nuevaCantidad);
+	Producto updateProductoCantidad(String codigo,Integer nuevaCantidad);
 }

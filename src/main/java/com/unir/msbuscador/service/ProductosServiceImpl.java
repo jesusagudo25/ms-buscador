@@ -35,29 +35,6 @@ public class ProductosServiceImpl implements ProductosService {
 	}
 	
 	@Override
-	public List<Producto> findByNombre(String nombre){
-		List<Producto> productos = repository.findByNombre(nombre);
-		
-		if (productos != null) {
-			return productos;
-		} else {
-			return null;
-		}
-	}
-	
-	@Override
-	public List<Producto> findByCodigo(String codigo) {
-		List<Producto> producto = repository.findByCodigo(codigo);
-		
-		if(producto != null) {
-			return producto;
-		}
-		else {
-			return null;
-		}
-	}
-	
-	@Override
 	public List<Producto> findByNombreContaining(String nombre) {
 
 		List<Producto> productos = repository.findByNombreContaining(nombre);
@@ -65,14 +42,14 @@ public class ProductosServiceImpl implements ProductosService {
 	}
 
 	@Override
-	public Producto getProducto(long productoId) {
-		return repository.findById(Long.valueOf(productoId)).orElse(null);
+	public Producto getProducto(String codigo) {
+		return repository.findByCodigo(codigo);
 	}
 
 	@Override
-	public Boolean removeProducto(long productoId) {
+	public Boolean removeProducto(String codigo) {
 
-		Producto producto = repository.findById(Long.valueOf(productoId)).orElse(null);
+		Producto producto = repository.findByCodigo(codigo);
 
 		if (producto != null) {
 			repository.delete(producto);
@@ -98,8 +75,8 @@ public class ProductosServiceImpl implements ProductosService {
 	}
 	
 	@Override
-	public Producto updateProducto(long productoId, CreateProductoRequest request) {
-		Producto producto = repository.findById(Long.valueOf(productoId)).orElse(null);
+	public Producto updateProducto(String codigo, CreateProductoRequest request) {
+		Producto producto = repository.findByCodigo(codigo);
 		
 		/*Validar entrada*/
 		if (producto != null) {
@@ -120,8 +97,8 @@ public class ProductosServiceImpl implements ProductosService {
 	}
 	
 	@Override
-	public Producto updateProductoCantidad(long productoId, Integer nuevaCantidad) {
-		Producto producto = repository.findById(Long.valueOf(productoId)).orElse(null);
+	public Producto updateProductoCantidad(String codigo, Integer nuevaCantidad) {
+		Producto producto = repository.findByCodigo(codigo);
 		
 		if(producto != null) {
 			producto.setCantidad(nuevaCantidad);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.unir.msbuscador.model.pojo.Producto;
 import com.unir.msbuscador.model.pojo.ProductoProveedor;
 
 public interface ProductoProveedorRepository extends JpaRepository<ProductoProveedor, Long>{
@@ -12,4 +13,6 @@ public interface ProductoProveedorRepository extends JpaRepository<ProductoProve
 	List<ProductoProveedor> findByNombreContainingAndProveedorId(String nombre, long proveedorId);
 	
 	List<ProductoProveedor> findByProveedorId(long proveedorId);
+	
+	ProductoProveedor findByCodigo(String codigo);
 }
