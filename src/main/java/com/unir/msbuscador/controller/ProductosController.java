@@ -33,14 +33,11 @@ public class ProductosController {
 
 	@GetMapping("/productos")
 	public ResponseEntity<List<Producto>> getProductos(
-			@RequestParam(value = "nombre", required = false) String nombre,
-		    @RequestParam(value = "codigo", required = false) String codigo
+			@RequestParam(value = "nombre", required = false) String nombre
     ) {
 		List<Producto> productos;
 		
-		if (nombre != null && codigo != null) {
-			productos = service.findByNombreAndCodigo(nombre, codigo);
-	    } else if (nombre != null) {
+		if (nombre != null) {
 	    	productos = service.findByNombreContaining(nombre);
 	    } else {	    	
 	    	productos = service.getProductos();

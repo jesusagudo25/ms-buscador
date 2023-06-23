@@ -16,5 +16,5 @@ public class CreateProductoProveedorRequest {
 	private String codigo;
 	private Double precio;
 	private int cantidad;
-	private Proveedor idProveedor;
+	private String proveedorId;
 }

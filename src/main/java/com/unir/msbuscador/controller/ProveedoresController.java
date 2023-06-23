@@ -59,7 +59,7 @@ public class ProveedoresController {
 	
 	@GetMapping("/proveedores/{proveedorId}/productos")
 	public ResponseEntity<List<ProductoProveedor>> getProductosProveedores(
-			@PathVariable long proveedorId,
+			@PathVariable String proveedorId,
 			@RequestParam(value = "nombre", required = false) String nombre
 			){
 		
@@ -81,7 +81,7 @@ public class ProveedoresController {
 	}
 	
 	@GetMapping("/proveedores/{proveedorId}")
-	public ResponseEntity<Proveedor> getProveedor(@PathVariable long proveedorId) {
+	public ResponseEntity<Proveedor> getProveedor(@PathVariable String proveedorId) {
 
 		log.info("Request received for product {}", proveedorId);
 		Proveedor proveedor = proveedorService.getProveedor(proveedorId);
@@ -95,7 +95,7 @@ public class ProveedoresController {
 	}
 
 	@DeleteMapping("/proveedores/{proveedorId}")
-	public ResponseEntity<Void> deleteProveedor(@PathVariable long proveedorId) {
+	public ResponseEntity<Void> deleteProveedor(@PathVariable String proveedorId) {
 
 		Boolean removed = proveedorService.removeProveedor(proveedorId);
 
@@ -134,7 +134,7 @@ public class ProveedoresController {
 	}
 	
 	@PostMapping("/proveedores/{proveedorId}/productos")
-	public ResponseEntity<ProductoProveedor> createProductoProveedor(@PathVariable Proveedor proveedorId, @RequestBody CreateProductoProveedorRequest request) {
+	public ResponseEntity<ProductoProveedor> createProductoProveedor(@PathVariable String proveedorId, @RequestBody CreateProductoProveedorRequest request) {
 
 		ProductoProveedor createdProducto = productoProveedorService.createProducto(proveedorId, request);
 
@@ -160,7 +160,7 @@ public class ProveedoresController {
 	
 	
 	@PutMapping("proveedores/{proveedorId}")
-	public ResponseEntity<Proveedor> updateProveedor(@PathVariable long proveedorId, @RequestBody CreateProveedorRequest request){
+	public ResponseEntity<Proveedor> updateProveedor(@PathVariable String proveedorId, @RequestBody CreateProveedorRequest request){
 		Proveedor updateProveedor = proveedorService.updateProveedor(proveedorId, request);
 
 		if (updateProveedor != null) {

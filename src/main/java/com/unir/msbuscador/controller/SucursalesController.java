@@ -29,8 +29,7 @@ public class SucursalesController {
 
 	@GetMapping("/sucursales")
 	public ResponseEntity<List<Sucursal>> getSucursales(
-			@RequestParam(value = "nombre", required = false) String nombre,
-			@RequestParam(value = "direccion", required = false) String direccion
+			@RequestParam(value = "nombre", required = false) String nombre
 	    ) {
 		
 		List<Sucursal> sucursales;
@@ -50,7 +49,7 @@ public class SucursalesController {
 	}
 	
 	@GetMapping("/sucursales/{sucursalId}")
-	public ResponseEntity<Sucursal> getSucursal(@PathVariable long sucursalId) {
+	public ResponseEntity<Sucursal> getSucursal(@PathVariable String sucursalId) {
 
 		log.info("Request received for product {}", sucursalId);
 		Sucursal sucursal = service.getSucursal(sucursalId);
@@ -64,7 +63,7 @@ public class SucursalesController {
 	}
 
 	@DeleteMapping("/sucursales/{sucursalId}")
-	public ResponseEntity<Void> deleteSucursal(@PathVariable long sucursalId) {
+	public ResponseEntity<Void> deleteSucursal(@PathVariable String sucursalId) {
 
 		Boolean removed = service.removeSucursal(sucursalId);
 
@@ -90,7 +89,7 @@ public class SucursalesController {
 	}
 	
 	@PutMapping("sucursales/{sucursalId}")
-	public ResponseEntity<Sucursal> updateSucursal(@PathVariable long sucursalId, @RequestBody CreateSucursalRequest request){
+	public ResponseEntity<Sucursal> updateSucursal(@PathVariable String sucursalId, @RequestBody CreateSucursalRequest request){
 		Sucursal updateSucursal = service.updateSucursal(sucursalId, request);
 
 		if (updateSucursal != null) {

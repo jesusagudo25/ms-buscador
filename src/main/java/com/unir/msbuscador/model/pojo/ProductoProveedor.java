@@ -1,19 +1,12 @@
 package com.unir.msbuscador.model.pojo;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
-@Table(name = "productoproveedor")
+@Document(indexName = "productosproveedores", createIndex = true)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,24 +24,21 @@ import lombok.ToString;
 public class ProductoProveedor {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private String id;
 	
-	@Column(name = "nombre", unique = true)
+	@MultiField(mainField = @Field(type = FieldType.Keyword, name = "nombre"),
+		      otherFields = @InnerField(suffix = "buscar", type = FieldType.Search_As_You_Type))
 	private String nombre;
 	
-	@Column(name = "codigo", unique = true)
+	@Field(type = FieldType.Keyword, name = "codigo")
 	private String codigo;
 	
-	@Column(name = "precio")
+	@Field(type = FieldType.Double, name = "precio")
 	private Double precio;
-	
-	@Column(name = "cantidad")
+
+	@Field(type = FieldType.Integer, name = "cantidad")	
 	private int cantidad;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "proveedor_id", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JsonIgnore
-	private Proveedor proveedor;
+	@Field(type = FieldType.Keyword, name = "proveedorId")
+    private String proveedorId;
 }

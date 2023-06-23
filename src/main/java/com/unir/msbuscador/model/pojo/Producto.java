@@ -1,11 +1,12 @@
 package com.unir.msbuscador.model.pojo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
-@Table(name = "producto")
+@Document(indexName = "productos", createIndex = true)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,19 +22,20 @@ import lombok.ToString;
 @Builder
 @ToString
 public class Producto {
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private String id;
 	
-	@Column(name = "nombre", unique = true)
+	@MultiField(mainField = @Field(type = FieldType.Keyword, name = "nombre"),
+		      otherFields = @InnerField(suffix = "buscar", type = FieldType.Search_As_You_Type))
 	private String nombre;
 	
-	@Column(name = "codigo", unique = true)
+	@Field(type = FieldType.Keyword, name = "codigo")
 	private String codigo;
 	
-	@Column(name = "precio")
+	@Field(type = FieldType.Double, name = "precio")
 	private Double precio;
 	
-	@Column(name = "cantidad")
+	@Field(type = FieldType.Integer, name = "cantidad")
 	private int cantidad;
 }
